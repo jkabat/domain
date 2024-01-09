@@ -53,7 +53,7 @@ final class DomainIdTypeTest extends TestCase
             ->willReturn('native_integer_type')
         ;
         $this->platform->expects(self::any())
-            ->method('getVarcharTypeDeclarationSQL')
+            ->method('getStringTypeDeclarationSQL')
             ->willReturn('native_string_type')
         ;
     }
