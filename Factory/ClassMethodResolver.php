@@ -39,7 +39,7 @@ final class ClassMethodResolver
         }
 
         foreach ($reflection->getParameters() as $i => $param) {
-            if (null === $type = $param->getType()) {
+            if (null === ($type = $param->getType()) || !$type instanceof \ReflectionNamedType) {
                 $type = 'mixed';
             } elseif ('self' === strtolower($name = $type->getName())) {
                 /** @psalm-suppress PossiblyNullReference */

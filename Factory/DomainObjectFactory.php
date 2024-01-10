@@ -10,7 +10,7 @@ namespace MsgPhp\Domain\Factory;
 interface DomainObjectFactory
 {
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T> $class
      *
@@ -19,7 +19,7 @@ interface DomainObjectFactory
     public function create(string $class, array $context = []): object;
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T> $class
      *

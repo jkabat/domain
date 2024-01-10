@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MsgPhp\Domain\Infrastructure\DependencyInjection;
 
-use Doctrine\DBAL\Types\Type as DoctrineType;
+use Doctrine\DBAL\Types\Types as DoctrineType;
 use MsgPhp\Domain\Infrastructure\Console as ConsoleInfrastructure;
 use Ramsey\Uuid\Doctrine as DoctrineUuid;
 use Symfony\Component\DependencyInjection\Alias;
@@ -35,7 +35,7 @@ final class ExtensionHelper
 
         foreach ($typeClassMapping as $idClass => $typeClass) {
             /** @psalm-suppress DeprecatedConstant */
-            $type = $idTypeMapping[$idClass] ?? 'integer';
+            $type = $idTypeMapping[$idClass] ?? DoctrineType::INTEGER;
 
             if (isset($uuidMapping[$type])) {
                 if (!class_exists($uuidClass = $uuidMapping[$type])) {

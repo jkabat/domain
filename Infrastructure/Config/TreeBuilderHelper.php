@@ -17,7 +17,7 @@ final class TreeBuilderHelper
      */
     public static function root(string $name, &$treeBuilder = null): ArrayNodeDefinition
     {
-        $treeBuilder = new TreeBuilder($name, 'array', $builder = new NodeBuilder());
+        $treeBuilder = new TreeBuilder($name, 'array', new NodeBuilder());
 
         /**
          * @psalm-suppress RedundantCondition
@@ -25,8 +25,6 @@ final class TreeBuilderHelper
          *
          * @var ArrayNodeDefinition
          */
-        return method_exists($treeBuilder, 'getRootNode')
-            ? $treeBuilder->getRootNode()
-            : $treeBuilder->root($name, 'array', $builder);
+        return $treeBuilder->getRootNode();
     }
 }

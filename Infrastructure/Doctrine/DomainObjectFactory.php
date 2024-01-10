@@ -24,7 +24,6 @@ final class DomainObjectFactory implements BaseDomainObjectFactory
 
     public function create(string $class, array $context = []): object
     {
-        /** @var T */
         return $this->factory->create($this->resolveDiscriminatorClass($class, $context), $context);
     }
 
@@ -33,7 +32,6 @@ final class DomainObjectFactory implements BaseDomainObjectFactory
         $class = $this->factory->getClass($class, $context);
 
         if ($this->em->getMetadataFactory()->isTransient($class)) {
-            /** @var T */
             return $this->factory->reference($class, $context);
         }
 
@@ -41,7 +39,6 @@ final class DomainObjectFactory implements BaseDomainObjectFactory
             throw InvalidClass::create($class);
         }
 
-        /** @var T */
         return $ref;
     }
 

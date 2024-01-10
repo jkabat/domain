@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace MsgPhp\Domain\Infrastructure\Config;
 
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder as BaseNodeBuilder;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
-use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 use Symfony\Component\Config\Definition\Builder\ParentNodeDefinitionInterface;
-use Symfony\Component\Config\Definition\Builder\VariableNodeDefinition;
 use Symfony\Component\Config\Definition\NodeInterface;
 use Symfony\Component\Config\Definition\PrototypeNodeInterface;
 
 /**
  * @author Roland Franssen <franssen.roland@gmail.com>
  */
-final class ClassMappingNodeDefinition extends VariableNodeDefinition implements ParentNodeDefinitionInterface
+final class ClassMappingNodeDefinition extends NodeDefinition implements ParentNodeDefinitionInterface
 {
     public const NAME = 'class_mapping';
 
@@ -145,7 +142,7 @@ final class ClassMappingNodeDefinition extends VariableNodeDefinition implements
         throw new \BadMethodCallException('Method "'.__METHOD__.'" is not applicable.');
     }
 
-    public function append(NodeDefinition $node): self
+    public function append(NodeDefinition $node): static
     {
         throw new \BadMethodCallException('Method "'.__METHOD__.'" is not applicable.');
     }
@@ -161,14 +158,6 @@ final class ClassMappingNodeDefinition extends VariableNodeDefinition implements
     }
 
     /**
-     * @return null|ArrayNodeDefinition|BaseNodeBuilder|NodeBuilder|NodeDefinition|NodeParentInterface|self|VariableNodeDefinition
-     */
-    public function end()
-    {
-        return $this->parent;
-    }
-
-    /**
      * @psalm-suppress ImplementedReturnTypeMismatch
      */
     protected function instantiateNode(): ClassMappingNode
@@ -179,7 +168,7 @@ final class ClassMappingNodeDefinition extends VariableNodeDefinition implements
     protected function createNode(): NodeInterface
     {
         /** @var ClassMappingNode $node */
-        $node = parent::createNode();
+        $node = $this->createVariableNode();
         $node->setKeyAttribute('class');
         $node->setHints($this->hints);
 
@@ -193,6 +182,42 @@ final class ClassMappingNodeDefinition extends VariableNodeDefinition implements
         }
 
         $node->setPrototype($prototypedNode);
+
+        return $node;
+    }
+
+    /**
+     * Copied from VariableNodeDefinition
+     */
+    protected function createVariableNode(): NodeInterface
+    {
+        $node = $this->instantiateNode();
+
+        if (isset($this->normalization)) {
+            $node->setNormalizationClosures($this->normalization->before);
+        }
+
+        if (isset($this->merge)) {
+            $node->setAllowOverwrite($this->merge->allowOverwrite);
+        }
+
+        if (true === $this->default) {
+            $node->setDefaultValue($this->defaultValue);
+        }
+
+        $node->setAllowEmptyValue($this->allowEmptyValue);
+        $node->addEquivalentValue(null, $this->nullEquivalent);
+        $node->addEquivalentValue(true, $this->trueEquivalent);
+        $node->addEquivalentValue(false, $this->falseEquivalent);
+        $node->setRequired($this->required);
+
+        if ($this->deprecation) {
+            $node->setDeprecated($this->deprecation['package'], $this->deprecation['version'], $this->deprecation['message']);
+        }
+
+        if (isset($this->validation)) {
+            $node->setFinalValidationClosures($this->validation->rules);
+        }
 
         return $node;
     }

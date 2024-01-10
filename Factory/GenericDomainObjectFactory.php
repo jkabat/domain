@@ -46,7 +46,6 @@ final class GenericDomainObjectFactory implements DomainObjectFactory
             throw InvalidClass::create($class);
         }
 
-        /** @var T */
         return new $class(...$this->resolveArguments($class, '__construct', $context));
     }
 
@@ -67,7 +66,6 @@ final class GenericDomainObjectFactory implements DomainObjectFactory
         }
 
         try {
-            /** @var T */
             return Instantiator::instantiate($class, $properties);
         } catch (ClassNotFoundException $e) {
             throw InvalidClass::create($class);
