@@ -28,7 +28,7 @@ final class MappingCacheWarmer implements CacheWarmerInterface
         return false;
     }
 
-    public function warmUp($cacheDir): array
+    public function warmUp(string $cacheDir, ?string $buildDir = null): array
     {
         $filesystem = new Filesystem();
         $filesystem->mkdir($target = $cacheDir.'/'.$this->dirName);
