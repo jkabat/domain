@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MsgPhp\Domain\Infrastructure\DependencyInjection;
 
+use Composer\InstalledVersions;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\ORM\Version as DoctrineOrmVersion;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
@@ -83,6 +83,6 @@ final class FeatureDetection
 
     public static function isDoctrineOrmAvailable(ContainerInterface $container): bool
     {
-        return self::hasDoctrineBundle($container) && class_exists(DoctrineOrmVersion::class);
+        return self::hasDoctrineBundle($container) && InstalledVersions::isInstalled('doctrine/dbal');
     }
 }
