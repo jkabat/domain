@@ -6,7 +6,7 @@ namespace MsgPhp\Domain\Infrastructure\Doctrine\Event;
 
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use MsgPhp\Domain\Infrastructure\Doctrine\MappingConfig;
 use MsgPhp\Domain\Infrastructure\Doctrine\ObjectMappingProvider;
 
@@ -64,7 +64,7 @@ final class ObjectMappingListener
         $this->metadataFactory = null;
     }
 
-    private function processClassFields(ClassMetadataInfo $metadata, ?\ReflectionClass $class = null): void
+    private function processClassFields(ClassMetadata $metadata, ?\ReflectionClass $class = null): void
     {
         $class = $class ?? $metadata->getReflectionClass();
 
@@ -82,7 +82,7 @@ final class ObjectMappingListener
         }
     }
 
-    private function processFieldMapping(ClassMetadataInfo $metadata, array $mapping): void
+    private function processFieldMapping(ClassMetadata $metadata, array $mapping): void
     {
         foreach ($mapping as $field => $info) {
             if ($metadata->hasField($field) || $metadata->hasAssociation($field)) {
@@ -117,7 +117,7 @@ final class ObjectMappingListener
         }
     }
 
-    private function addNestedEmbeddedClasses(ClassMetadataInfo $subClass, ClassMetadataInfo $parentClass, string $prefix): void
+    private function addNestedEmbeddedClasses(ClassMetadata $subClass, ClassMetadata $parentClass, string $prefix): void
     {
         foreach ($subClass->embeddedClasses as $property => $embeddableClass) {
             if (isset($embeddableClass['inherited'])) {
@@ -136,7 +136,7 @@ final class ObjectMappingListener
         }
     }
 
-    private function inheritIdGeneratorMapping(ClassMetadataInfo $class, ClassMetadataInfo $parent): void
+    private function inheritIdGeneratorMapping(ClassMetadata $class, ClassMetadata $parent): void
     {
         if ($parent->isIdGeneratorSequence()) {
             $class->setSequenceGeneratorDefinition($parent->sequenceGeneratorDefinition);
@@ -153,7 +153,7 @@ final class ObjectMappingListener
         }
     }
 
-    private function getMetadata(string $class): ClassMetadataInfo
+    private function getMetadata(string $class): ClassMetadata
     {
         if (null === $this->metadataFactory) {
             throw new \LogicException('Metadata factory not set.');
