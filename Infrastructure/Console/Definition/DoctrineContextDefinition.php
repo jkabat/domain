@@ -36,9 +36,8 @@ final class DoctrineContextDefinition implements DomainContextDefinition
     public function configure(InputDefinition $definition): void
     {
         $this->discriminatorField = null;
-        $metadata = $this->getMetadata();
 
-        if (isset($metadata->discriminatorColumn['fieldName'])) {
+        if (isset($metadata->discriminatorColumn['fieldName']) && ($metadata = $this->getMetadata())) {
             $definition->addOption(new InputOption(
                 $this->discriminatorField = ClassContextDefinition::getUniqueFieldName($definition, $metadata->discriminatorColumn['fieldName']),
                 null,
@@ -54,8 +53,7 @@ final class DoctrineContextDefinition implements DomainContextDefinition
     {
         $context = [];
 
-        if (null !== $this->discriminatorField) {
-            $metadata = $this->getMetadata();
+        if (null !== $this->discriminatorField && ($metadata = $this->getMetadata())) {
             $key = $metadata->discriminatorColumn['fieldName'];
 
             if (isset($values[$key])) {
@@ -77,10 +75,10 @@ final class DoctrineContextDefinition implements DomainContextDefinition
         return $context + $this->definition->getContext($input, $io, $values);
     }
 
-    private function getMetadata(): ClassMetadata
+    private function getMetadata(): ?ClassMetadata
     {
         if ($this->em->getMetadataFactory()->isTransient($this->class)) {
-            throw InvalidClass::create($this->class);
+            return null;
         }
 
         return $this->em->getClassMetadata($this->class);
