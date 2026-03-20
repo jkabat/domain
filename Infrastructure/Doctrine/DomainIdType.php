@@ -122,7 +122,7 @@ abstract class DomainIdType extends Type
         return static::getInnerType()->getSQLDeclaration($fieldDeclaration, $platform);
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         if ($value instanceof DomainId) {
             $value = $value->isEmpty() ? null : $value->toString();
